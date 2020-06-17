@@ -1,0 +1,22 @@
+{
+  "name": "quizapp",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "createdb": "tsc createdb.ts; node createdb.js; rm createdb.js"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "sqlite3": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/sqlite3": "^3.1.6",
+    "tslint": "^6.1.2"
+  }
+}
