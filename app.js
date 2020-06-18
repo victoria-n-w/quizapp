@@ -7,12 +7,13 @@ const sqlite3 = require('sqlite3')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var quizRouter = require('./routes/quiz')
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/quiz', quizRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

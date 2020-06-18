@@ -1,0 +1,289 @@
+body{
+    text-align: center;
+  }
+  
+  #main-container{
+    text-align: left;
+    max-width: 1600px;
+    margin: auto;
+  }
+  
+  div{
+    box-sizing: border-box;
+  }
+  
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 40%;
+    padding: 15px;
+  }
+  
+  table {
+    border-collapse: collapse;
+    margin: auto;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+  }
+  
+  tr {
+    border-bottom: 1px solid #ffe8d7;
+  }
+  
+  th{
+    color: #d85d13;
+  }
+  
+  td, th{
+    padding: 15px;
+  }
+  
+  .container {
+    padding: 2px 16px;
+  }
+  
+  .question-number{
+    color: #eb7206;
+  }
+  
+  .question-content{
+    font-size: xx-large;
+  }
+  
+  
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    padding: 7px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+    font: 16px Arial, Helvetica, sans-serif;
+    height: 45px;
+    font-size: xx-large;
+  }
+  
+  
+  button {
+    width: 100%;
+    border: none;
+    display: inline-block;
+    border-radius: 2px;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+  
+  button.cancel{
+    background-color: #f2dbdb;
+    border: solid 1px #f2dbdb;
+    height: 30px;
+    padding: inherit;
+  }
+  
+  button.cancel:hover{
+    border: solid 1px #f2dbdb;
+    background-color: white;
+  }
+  
+  .function-button{
+    background-color: #fff0f0;
+  }
+  
+  .function-button:hover:enabled{
+    color: white;
+    background-color: #eca069;  
+  } 
+  
+  button:disabled{
+    cursor: not-allowed;
+  }
+  
+  #prvs, #next{
+    border: solid #e37c54 2px;
+    background-color: white;
+  }
+  
+  #time-display{
+    text-align: center;
+  font-size: 55px;
+  margin: auto;
+  font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+  }
+  
+  #score-display{
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    font-size: 54px;
+  }
+  
+  li{
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+  }
+  
+  #prvs:hover, #next:hover{
+    background-color: #e37c54;
+    color: white;
+  }
+  
+  .finish-locked{
+    background-color: #c7c2c0;
+  }
+  
+  button.finish{
+    color: #fff;
+    background-color: #107210;
+  }
+  
+  .grid-container{
+    width: 100%;
+    display: grid;
+    grid-gap: 15px;
+  }
+  
+  .important-info{
+    width: 100%;
+  background: antiquewhite;
+  padding: 30px;
+  color: black;
+  }
+  
+  .more-important{
+    background: #fd9583;
+  padding: 30px;
+  height: 200px;
+  }
+  
+  .invisible{
+    visibility: hidden;
+  }
+  
+  #question-container{
+    box-sizing: border-box;
+    grid-area: question;
+    width: 100%;
+  }
+  
+  .intro-container{
+    grid-area: intro;
+    width: 100%;
+  }
+  
+  #timer-container{
+    width: 100%;
+    grid-area: timer;
+  }
+  
+  #container-prvs{
+    width: 100%;
+    grid-area: prvs;
+  }
+  
+  #container-cancel{
+    width: 100%;
+    grid-area: cancel;
+  }
+  
+  #container-next{
+    width: 100%;
+    grid-area: next;
+  }
+  
+  #container-finish{
+    position: relative;
+    width: 100%;
+    grid-area: finish;
+  }
+  
+  #save-button{
+    grid-area: save;
+    width: 100%;
+  }
+  
+  #save-extra-button{
+    grid-area: save-extra;
+    width: 100%;
+  }
+  
+  #scoreboard-container{
+    width: 100%;
+    grid-area: scoreboard;
+  }
+  
+  @media screen and (min-width: 900px){
+    #main-container{
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-areas: 
+      'scoreboard intro .'
+      'scoreboard question timer'
+      'scoreboard . .';
+    }
+    #save-buttons{
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas: 'save save-extra';
+    }
+    
+    #button-container{
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-areas:
+      'cancel cancel cancel'
+      'prvs . next'
+      'finish finish finish';
+    }
+  }
+  
+  
+  @media screen and (max-width: 900px){
+    #timer-container{
+      display: none;
+    }
+    #button-container{
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas: 'cancel cancel''prvs next' 'finish finish';
+    }
+  
+    #save-buttons{
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas: 'save save-extra';
+    }
+  
+    #main-container{
+      grid-template-columns: 1fr;
+      grid-template-areas: 'intro' 'question' 'scoreboard';
+    }  
+  }
+  
+  @media screen and (max-width: 450px){
+    #button-container{
+      grid-template-columns: 1fr;
+      grid-template-areas:
+      'cancel' 
+      'prvs'
+      'next'
+      'finish';
+    }
+  
+    #save-buttons{
+      grid-template-columns: 1fr;
+      grid-template-areas: 'save' 'save-extra';
+    }
+  }
+  
+  
+  .question{
+    transition: 100ms;
+  }
+  
+  .hidden{
+    display: none;
+  }
+  
+  .wrong-answer{
+    color: red;
+  }
+  
+  
