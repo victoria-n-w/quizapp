@@ -218,9 +218,8 @@ body{
     #main-container{
       grid-template-columns: 1fr 2fr 1fr;
       grid-template-areas: 
-      'scoreboard intro .'
-      'scoreboard question timer'
-      'scoreboard . .';
+      '. intro .'
+      '. question timer';
     }
     #save-buttons{
       grid-template-columns: 1fr 1fr;
@@ -253,7 +252,7 @@ body{
   
     #main-container{
       grid-template-columns: 1fr;
-      grid-template-areas: 'intro' 'question' 'scoreboard';
+      grid-template-areas: 'intro' 'question' ;
     }  
   }
   
@@ -286,4 +285,8 @@ body{
     color: red;
   }
   
-  
+  #quizTitle{
+    font-size: x-large;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+  }
+

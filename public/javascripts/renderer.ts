@@ -76,17 +76,6 @@ export class Renderer {
 
 
     }
-    private score_to_string(acc: string, el: number, i: number) {
-        return acc + `<li>` + Renderer.timeToString(el) + `</li>`
-    }
-
-    public renderScores(scoreboard: number[]): void {
-        if (scoreboard === [])
-            this.scoreList.innerHTML = `<li>--:--:--</li>`
-        else
-            this.scoreList.innerHTML = scoreboard.reduce(this.score_to_string, ``)
-
-    }
 
     public nextQuestion(curr: number, max: number): void {
 
@@ -129,42 +118,6 @@ export class Renderer {
 
     public getAnswer(index: number): string {
         return this.input[index].value
-    }
-
-    private renderTable(questions: Question[], questionsCorrect: boolean[]): void {
-        questions.forEach((el, i) => {
-            let res = `<td>` + el.content + `</td>`
-            res += `<td>` + this.input[i].value + `</td>`
-            res += `<td>` + el.answer + `</td>`
-
-
-            if (!questionsCorrect[i]) {
-                res += `<td>` + el.penalty + '</td>'
-            } else {
-                res += `<td>--</td>`
-            }
-
-            const table = document.getElementById('result-table');
-            const row = (table as HTMLTableElement).insertRow();
-
-            row.innerHTML = res
-            if (!questionsCorrect[i])
-                row.classList.add('wrong-answer')
-
-
-        })
-    }
-
-    public renderScore(score: number, questions: Question[], questionsCorrect: boolean[]): void {
-
-        this.buttonContainer.classList.add('hidden')
-        this.timerContainer.classList.add('hidden')
-        this.containerQuestions.innerHTML = ``
-        this.afterQuiz.classList.remove('hidden');
-
-        (document.getElementById('score-display') as HTMLElement).innerText = Renderer.timeToString(score);
-
-        this.renderTable(questions, questionsCorrect)
     }
 
     static timeToString(score: number): string {
@@ -219,19 +172,13 @@ export class Renderer {
         this.timerContainer.classList.remove('hidden')
         this.afterQuiz.classList.add(`hidden`)
         this.timeDisplay.innerText = `00:00:00`
-        this.resultTable.innerHTML = ` <tr>
-        <th>
-            Pytanie
-        </th>
-        <th>
-            Twoja <br>odpowiedź
-        </th>
-        <th>
-            Prawidłowa <br>odpowiedź
-        </th>
-        <th>
-            Kara
-        </th>
-    </tr>`
+    }
+
+    public renderError(message: string) {
+        //TODO
+    }
+
+    public startLoading() {
+        //TODO
     }
 }

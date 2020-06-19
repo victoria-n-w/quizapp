@@ -1,8 +1,8 @@
 import { Renderer } from "./renderer.js";
 import { Timer } from "./timer.js";
-import { StorageManager } from "./storagemanager.js"
 
-type Question = {
+
+export type Question = {
     penalty: number;
     content: string;
     answer: string;
@@ -25,7 +25,6 @@ export class QuizManager {
     constructor(questions: Question[]) {
         this.questions = questions
         this.timer = new Timer()
-        this.storage = new StorageManager('quizScores', 'quizStats')
         this.renderer = new Renderer(this.timer, this.questions)
 
         this.questionsCorrect = []
@@ -37,8 +36,6 @@ export class QuizManager {
             this.questionsTimes.push(0)
             this.questionsCorrect.push(false)
         });
-
-        this.renderer.renderScores(this.storage.getScores())
 
     }
 
@@ -86,36 +83,17 @@ export class QuizManager {
 
     }
 
-    private checkAnswers(): number {
-        let penalty: number = 0
-        this.questions.forEach((element, i) => {
-            this.questionsCorrect[i] = (this.renderer.getAnswer(i) === this.questions[i].answer)
-            if (!this.questionsCorrect[i])
-                penalty += this.questions[i].penalty
-        });
-
-        return penalty
-    }
-
     public finish(): void {
         if (!this.renderer.checkForEmpty())
             return
 
         clearInterval(this.interval)
-        this.score = this.timer.measureTime() + this.checkAnswers() * 1000;
-        this.questionsTimes[this.currentQuestion] += this.timer.subMeasure();
 
-        this.checkAnswers()
+        //TODO wyslij wynik i cotam
 
-        this.renderer.renderScore(this.score, this.questions, this.questionsCorrect)
+        alert('skończono quiz xd')
     }
 
-    public save(stats: boolean): void {
-        this.storage.saveScore(this.score)
-        if (stats) {
-            this.storage.saveStats(this.questionsTimes)
-        }
-    }
 
     public cancel() {
         this.renderer.cancel()
@@ -123,7 +101,6 @@ export class QuizManager {
     }
 
     public reset() {
-        this.renderer.renderScores(this.storage.getScores())
         this.renderer.reset()
         clearInterval(this.interval)
     }

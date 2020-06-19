@@ -14,10 +14,24 @@ router.get('/:quizId', (req, res) => {
             console.log(err)
             res.render('error')
         } else {
-            res.render('quiz', { questions: rows })
+            res.send(rows)
         }
     })
 })
 
+
+router.get('/', (req, res) => {
+
+    req.db.all('SELECT * FROM quizzes ORDER BY id', [], (err, rows) => {
+        if (err) {
+            console.log(err)
+            res.render('error', { message: "Could not get quizzes list" })
+        } else {
+            res.render('quiz', { quizzes: rows })
+        }
+    })
+
+
+})
 export = router
 

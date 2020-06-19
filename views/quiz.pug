@@ -6,56 +6,53 @@ head
   meta(name='viewport' content='width=device-width, initial-scale=1')
   link(rel='stylesheet', href='/stylesheets/style.css')
   script(type='module' src='/javascripts/main.js')
-#main-container.grid-container
-  #scoreboard-container
-    .important-info(style='width: 100%;')
-      h3 Najlepsze wyniki:
-      ol#score-list
-        li --:--:--
-  .intro-container.card
-    p
-      | Rozwi&aogon;&zdot; ten quiz, zasady s&aogon; proste: odpowiedz na pytania
-      | a jak odpowiesz na wszystkie to zako&nacute;cz Z fartem!
-  #question-container.card
-    #image-board-container
-      img(src='/images/tablica.jpg' style='width: 100%; height: 100%;')
-    #start-container(style='text-align: center;')
-      button#start-button.function-button START QUIZ
-    #questions
-    #after-quiz.hidden
-      div(style='width: 100%; overflow: auto;')
-        table#result-table
-          tr
-            th
-              | Pytanie
-            th
-              | Twoja 
-              br
-              | odpowied&zacute;jade
-            th
-              | Prawid&lstrok;owa 
-              br
-              | odpowied&zacute;
-            th
-              | Kara
-      div(style='text-align: center;')
-        p#score-text Tw&oacute;j wynik to:
-        p#score-display 21:37:00
-      #save-buttons.grid-container
-        #save-button
-          button#save.function-button zapisz wynik
-        #save-extra-button
-          button#save-extra.function-button zapisz statystyki
-    #button-container.grid-container.hidden
-      #container-cancel
-        button#cancel.cancel anuluj
-      #container-prvs
-        button#prvs Poprzednie 
-      #container-next
-        button#next Nast&eogon;ne
-      #container-finish
-        button#finish.function-button Zako&nacute;cz
-  #timer-container.timer
-    .more-important
-      p#time-display
-        | 00:00:00
+body
+  #main-container.grid-container
+  
+    .intro-container.card
+      p#introText
+        | Wybierz sobie jakiś quiz
+      ol#quizList
+        each quiz in quizzes
+          li
+            p.QuizTitle #{quiz.name}
+            button(data-arg1=quiz.id data-arg2=quiz.name).quizSelectButton Load Quiz
+
+    #question-container.card.hidden
+      #image-board-container
+        p#quizTitle  TYTYYYYYŁ
+      #start-container(style='text-align: center;')
+        button#start-button.function-button START QUIZ
+      #questions
+      #after-quiz.hidden
+        div(style='width: 100%; overflow: auto;')
+          table#result-table
+            tr
+              th
+                | Pytanie
+              th
+                | Twoja 
+                br
+                | odpowied&zacute;jade
+              th
+                | Prawid&lstrok;owa 
+                br
+                | odpowied&zacute;
+              th
+                | Kara
+        div(style='text-align: center;')
+          p#score-text Tw&oacute;j wynik to:
+          p#score-display 21:37:00
+      #button-container.grid-container.hidden
+        #container-cancel
+          button#cancel.cancel anuluj
+        #container-prvs
+          button#prvs Poprzednie 
+        #container-next
+          button#next Nast&eogon;ne
+        #container-finish
+          button#finish.function-button Zako&nacute;cz
+    #timer-container.timer.hidden
+      .more-important
+        p#time-display
+          | 00:00:00
