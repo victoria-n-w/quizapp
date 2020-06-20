@@ -1,12 +1,7 @@
-doctype html
-head
-  meta(charset='utf-8')
-  meta(http-equiv='X-UA-Compatible' content='IE=edge')
-  title QUIZ
-  meta(name='viewport' content='width=device-width, initial-scale=1')
-  link(rel='stylesheet', href='/stylesheets/style.css')
+extends layout
+block scripts
   script(type='module' src='/javascripts/main.js')
-body
+block content
   #main-container.grid-container
   
     .intro-container.card
@@ -16,7 +11,7 @@ body
         each quiz in quizzes
           li
             p.QuizTitle #{quiz.name}
-            button(data-arg1=quiz.id data-arg2=quiz.name).quizSelectButton Load Quiz
+            button(data-arg1=quiz.id data-arg2=quiz.name).quizSelectButton.function-button Load Quiz
 
     #question-container.card.hidden
       #image-board-container
@@ -44,8 +39,6 @@ body
           p#score-text Tw&oacute;j wynik to:
           p#score-display 21:37:00
       #button-container.grid-container.hidden
-        #container-cancel
-          button#cancel.cancel anuluj
         #container-prvs
           button#prvs Poprzednie 
         #container-next

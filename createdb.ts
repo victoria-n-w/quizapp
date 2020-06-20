@@ -41,10 +41,12 @@ function createTables(): Promise<void> {
                 time_percent FLOAT(9) NOT NULL,
                 correct BIT,
                 user_id INTEGER,
+                question_id INTEGER,
                 quiz_id INTEGER,
                 FOREIGN KEY(user_id) REFERENCES users(id),
                 FOREIGN KEY(quiz_id) REFERENCES quizzes(id),
-                UNIQUE(user_id, quiz_id)
+                FOREIGN KEY(question_id) REFERENCES questions(id),
+                UNIQUE(user_id, question_id)
             )
         `)
 

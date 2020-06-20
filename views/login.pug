@@ -1,0 +1,11 @@
+extends layout
+block content
+    if (invalid)
+        p.error Ivalid username or password
+    if (missing)
+        p.error Missing username or password
+    .card(style='margin: auto')
+        form(action='auth' method='POST')
+            input(type='text' name='username' placeholder='Username' required='')
+            input(type='password' name='password' placeholder='Password' required='')
+            input(type='submit' value='sign in')

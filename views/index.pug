@@ -1,0 +1,11 @@
+extends layout 
+block content
+    .card(style='margin:auto')
+        a(href='/quiz')
+            button().function-button Lista quizów
+        if loggedin
+            a(href='/users/myProfile')
+                button.function-button Moje konto
+        else
+            a(href='/users/login')
+                button.function-button login

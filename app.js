@@ -5,6 +5,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const sqlite3 = require('sqlite3')
 
+var session = require('express-session')
+const SQLiteStore = require('connect-sqlite3')(session)
+
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var quizRouter = require('./routes/quiz')
@@ -14,12 +18,15 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.set('trust proxy', 1)
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({ store: new SQLiteStore, secret: 'elo wale wiadro', resave: true, cookie: { maxAge: 1000 * 60 * 60 }, saveUninitialized: false })) /*1 hour*/
 
 app.use((req, res, next) => {
   req.db = new sqlite3.Database('base.db')
@@ -43,7 +50,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', { message: 'nie ma takiej strony' });
 });
 
 module.exports = app;

@@ -92,12 +92,12 @@ body{
   }
   
   .function-button{
-    background-color: #fff0f0;
+    background-color: aliceblue;
   }
   
   .function-button:hover:enabled{
     color: white;
-    background-color: #eca069;  
+    background-color: #698aec;  
   } 
   
   button:disabled{
@@ -183,11 +183,6 @@ body{
     grid-area: prvs;
   }
   
-  #container-cancel{
-    width: 100%;
-    grid-area: cancel;
-  }
-  
   #container-next{
     width: 100%;
     grid-area: next;
@@ -229,7 +224,6 @@ body{
     #button-container{
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-areas:
-      'cancel cancel cancel'
       'prvs . next'
       'finish finish finish';
     }
@@ -242,7 +236,7 @@ body{
     }
     #button-container{
       grid-template-columns: 1fr 1fr;
-      grid-template-areas: 'cancel cancel''prvs next' 'finish finish';
+      grid-template-areas: 'prvs next' 'finish finish';
     }
   
     #save-buttons{
@@ -260,7 +254,6 @@ body{
     #button-container{
       grid-template-columns: 1fr;
       grid-template-areas:
-      'cancel' 
       'prvs'
       'next'
       'finish';
@@ -290,3 +283,63 @@ body{
     font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
   }
 
+
+
+  /* Add a black background color to the top navigation */
+.topnav {
+  background-color: #481fb9;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: aliceblue;
+  color: #250876;
+}
+
+/*formularz */
+
+.cardForm {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  padding: 15px;
+}
+
+.cardForm:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+input, select {
+  box-sizing: border-box;
+  outline: none;
+  width: 100%;
+  padding: 7px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+  font: 16px Arial, Helvetica, sans-serif;
+  height: 45px;
+}
+
+input[type="submit"]:hover{
+  background-color:#b1edff;
+}
+
+label, form>p {
+  display: inline-block;
+  box-sizing: border-box;
+  outline: none;
+  padding: 5px;
+  border: none;
+  font: 16px Arial, Helvetica, sans-serif;
+}

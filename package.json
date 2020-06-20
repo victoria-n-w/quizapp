@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "createdb": "tsc createdb.ts; node createdb.js; rm createdb.js"
+    "createdb": "tsc createdb.ts; node createdb.js; rm createdb.js",
+    "build": "tsc; tsc -p tsconfig.webpack.json"
   },
   "dependencies": {
+    "connect-sqlite3": "^0.9.11",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
