@@ -8,6 +8,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 const express = __importStar(require("express"));
 let router = express.Router();
+router.use('*', (req, res, next) => {
+    if (!req.session.loggedin) {
+        res.render('error', { message: 'You have to be logged in, in order to solve quizzes' });
+    }
+    else {
+        next();
+    }
+});
 router.get('/:quizId', (req, res) => {
     const quizId = parseInt(req.params.quizId);
     req.db.all(`
@@ -27,7 +35,14 @@ router.get('/:quizId', (req, res) => {
     });
 });
 router.get('/', (req, res) => {
-    req.db.all('SELECT * FROM quizzes ORDER BY id', [], (err, rows) => {
+    req.db.all(`
+        SELECT quizzes.id, quizzes.name FROM
+        quizzes 
+        LEFT JOIN scores
+        ON quizzes.id = scores.quiz_id
+        WHERE scores.quiz_id IS NULL
+        ORDER BY quiz_id
+    `, [], (err, rows) => {
         if (err) {
             console.log(err);
             res.render('error', { message: "Could not get quizzes list" });
@@ -52,42 +67,34 @@ function userSolvedQuiz(user_id, quiz_id, db) {
     });
 }
 router.post('/:quizId/solve', (req, res) => {
-    if (!req.session.loggedin)
-        res.send({ error: 'you have to log in to solve the quiz' });
-    else {
-    }
 });
 router.get('/api/:quizId/scores', (req, res) => {
-    if (!req.session.loggedin)
-        res.send({ error: 'you have to log in to solve the quiz' });
-    else {
-        const quiz_id = parseInt(req.params.quizId);
-        userSolvedQuiz(req.session.user_id, quiz_id, req.db)
-            .then((solved) => {
-            if (!solved) {
-                res.send({ error: 'you didnt solve that quiz' });
-            }
-            else {
-                Promise.all([
-                    getUserScore(req.session.user_id, quiz_id, req.db),
-                    getUserAnswers(req.session.user_id, quiz_id, req.db),
-                    getCommunityScore(quiz_id, req.db),
-                    getCorrectAnswers(quiz_id, req.db)
-                ]).then(([userScore, userAnswers, communityScore, correctAnswers]) => {
-                    res.send({
-                        userScore: userScore,
-                        userAnswers: userAnswers,
-                        communityScore: communityScore,
-                        correctAnswers: correctAnswers
-                    });
-                }).catch((reason) => {
-                    res.send({
-                        error: reason
-                    });
+    const quiz_id = parseInt(req.params.quizId);
+    userSolvedQuiz(req.session.user_id, quiz_id, req.db)
+        .then((solved) => {
+        if (!solved) {
+            res.send({ error: 'you didnt solve that quiz' });
+        }
+        else {
+            Promise.all([
+                getUserScore(req.session.user_id, quiz_id, req.db),
+                getUserAnswers(req.session.user_id, quiz_id, req.db),
+                getCommunityScore(quiz_id, req.db),
+                getCorrectAnswers(quiz_id, req.db)
+            ]).then(([userScore, userAnswers, communityScore, correctAnswers]) => {
+                res.send({
+                    userScore: userScore,
+                    userAnswers: userAnswers,
+                    communityScore: communityScore,
+                    correctAnswers: correctAnswers
                 });
-            }
-        });
-    }
+            }).catch((reason) => {
+                res.send({
+                    error: reason
+                });
+            });
+        }
+    });
 });
 function getUserScore(user_id, quiz_id, db) {
     return new Promise((resolve, reject) => {

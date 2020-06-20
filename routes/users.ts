@@ -7,7 +7,7 @@ let router = express.Router()
 
 
 const sqlGetUser = `
-        SELECT user_id FROM users  
+        SELECT id FROM users  
         WHERE username = ? AND password = ?
     `
 function prGetUser(username: string, password: string): Promise<number> {
@@ -17,7 +17,7 @@ function prGetUser(username: string, password: string): Promise<number> {
             if (err)
                 rejects(err)
             if (row)
-                resolve(row.user_id)
+                resolve(row.id)
             resolve(-1)
         })
         db.close()
@@ -36,7 +36,7 @@ router.post('/auth', (req, res) => {
                 req.session.user_id = id
                 res.redirect('/');
             } else {
-                res.render('login', { invalid: true, isLoginPage: true })
+                res.render('login', { invalid: true })
             }
         }).catch((reason) => {
             console.log('error at login')
@@ -44,7 +44,7 @@ router.post('/auth', (req, res) => {
             res.render('error', { message: 'Something went wrong' })
         })
     } else {
-        res.render('login', { missing: true, isLoginPage: true });
+        res.render('login', { missing: true });
     }
 });
 
