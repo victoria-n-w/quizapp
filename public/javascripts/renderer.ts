@@ -56,7 +56,7 @@ export class Renderer {
     public start(): void {
         this.containerQuestions.innerHTML = this.questionString
 
-        const tempInput = document.getElementsByTagName('input')
+        const tempInput = document.querySelectorAll('input[type="number"]')
 
         this.input = [].slice.call(tempInput);
         this.questionsEl = document.getElementsByClassName('question')

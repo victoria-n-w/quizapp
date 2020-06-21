@@ -1,6 +1,6 @@
 # How to use
 You have to run the following commands:
-- ```npm run install```
+- ```npm install```
 - ```npm run createdb```
 - ``` npm run build ```
 - ``` npm start ```

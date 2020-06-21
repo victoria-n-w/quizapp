@@ -55,11 +55,12 @@ export class QuizManager {
         this.timer.start()
 
         this.interval = setInterval(() => {
+
+            console.log(this.renderer.checkForEmpty())
             this.renderer.renderTime(this.timer.measureTime())
             if (this.renderer.checkForEmpty() && this.renderer.finishLocked) {
                 this.renderer.unlockFinish()
-            }
-            else if (!this.renderer.finishLocked && (!this.renderer.checkForEmpty())) {
+            } else if (!this.renderer.finishLocked && (!this.renderer.checkForEmpty())) {
                 this.renderer.lockFinish()
             }
         }, 10)
@@ -90,6 +91,7 @@ export class QuizManager {
 
 
     public finish(quizId: number): void {
+        console.log('try finish', quizId)
         if (!this.renderer.checkForEmpty())
             return
 

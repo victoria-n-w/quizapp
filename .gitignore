@@ -3,3 +3,4 @@ base.db
 sessions
 routes/*.js
 public/javascripts/*.js
+public/javascripts/*.js.map

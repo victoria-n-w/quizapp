@@ -156,7 +156,7 @@ async function createQuizzes() {
 
 
     for (let i = 0; i < questionsAnswer.length; i++) {
-        const questionPenalty = Math.ceil(Math.random() * 10)
+        const questionPenalty = Math.ceil(Math.random() * 10) + 4
         db.run(`
             INSERT INTO questions
             (quiz_id, content, answer, penalty)
