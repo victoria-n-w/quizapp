@@ -87,6 +87,9 @@ type postedAnswer = {
 router.post('/:quizId/solve', (req, res) => {
     const quiz_id = parseInt(req.params.quizId)
 
+    console.log(req.body)
+    console.log(JSON.stringify(req.body))
+
     userSolvedQuiz(req.session.user_id, quiz_id, req.db).then((did) => {
         if (did) {
             res.send({ error: 'thou shall not solve the same quiz more than once' })

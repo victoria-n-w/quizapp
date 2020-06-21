@@ -95,6 +95,10 @@ export class QuizManager {
 
         clearInterval(this.interval)
 
+        clearInterval(this.interval)
+        this.questionsTimes[this.currentQuestion] += this.timer.subMeasure();
+
+
         let timeSum = 0;
         this.questionsTimes.forEach((t) => {
             timeSum += t
@@ -115,9 +119,8 @@ export class QuizManager {
         let xhr = new XMLHttpRequest()
 
         xhr.open('POST', '/quiz/' + quizId.toString() + '/solve', true)
-        xhr.send(JSON.stringify({ 'result': result }))
-
-        console.log(JSON.stringify({ 'result': result }))
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+        xhr.send(JSON.stringify(result))
 
         xhr.onreadystatechange = () => {
             if (xhr.readyState == 4 && xhr.status == 200) {
