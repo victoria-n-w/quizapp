@@ -6,7 +6,7 @@ let router = express.Router()
 
 
 router.get('/', isAuth, (req, res) => {
-    res.render('index', { title: 'Quizapp', loggedin: true })
+    res.render('index', { title: 'Quizapp', loggedin: true, username: req.session.username })
 })
 
 export = router

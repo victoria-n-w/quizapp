@@ -3,7 +3,7 @@ block content
     if (invalid)
         p.error Paswords do not match
     .card(style='margin: auto')
-        form(action='auth' method='POST')
+        form(action='/users/changepass' method='POST')
             input(type='password' name='password' placeholder='old password' required='')
             p New password:
             input(type='password' name='newPassword' placeholder='new password' required='')

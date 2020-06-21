@@ -69,7 +69,7 @@ router.get('/login', csrfProtection, (req, res) => {
 })
 
 router.get('/changepass', csrfProtection, (req, res) => {
-    res.render('changepass')
+    res.render('changepass', { username: req.session.username, csrfToken: req.csrfToken() })
 })
 
 
@@ -77,12 +77,12 @@ router.post('/changepass', csrfProtection, (req, res) => {
     if (req.body.newPassword && req.body.confirmPassword && req.body.password) {
         req.db.get(`
             SELECT * FROM users WHERE id=? AND password = ?
-        `, [req.session.user_id], (err, row) => {
+        `, [req.session.user_id, req.body.password], (err, row) => {
             if (err) {
                 console.log(err)
-                res.render('error', { message: 'thou cannot do that right now' })
+                res.render('error', { message: 'thou cannot do that right now', username: req.session.username })
             } else if (row == undefined || req.body.newPassword !== req.body.confirmPassword) {
-                res.render('changepass', { invalid: true, csrfToken: req.csrfToken() })
+                res.render('changepass', { invalid: true, csrfToken: req.csrfToken(), username: req.session.username })
             } else {
                 req.db.run(`
                     UPDATE users
@@ -95,6 +95,7 @@ router.post('/changepass', csrfProtection, (req, res) => {
                 })
                 delete (req.session.user_id)
                 delete (req.session.loggedin)
+                delete (req.session.username)
 
                 res.redirect('/users/login')
             }
@@ -108,6 +109,7 @@ router.post('/changepass', csrfProtection, (req, res) => {
 router.post('/logout', (req, res) => {
     delete (req.session.loggedin)
     delete (req.session.user_id)
+    delete (req.session.username)
     res.redirect('/users/login')
 })
 

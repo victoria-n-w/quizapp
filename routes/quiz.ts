@@ -24,12 +24,12 @@ router.get('/', (req, res) => {
     `, [req.session.user_id], (err, rows) => {
         if (err) {
             console.log(err)
-            res.render('error', { message: "Could not get quizzes list" })
+            res.render('error', { message: "Could not get quizzes list", username: req.session.username })
         } else {
             if (rows.length == 0)
-                res.render('quiz', { isEmpty: true })
+                res.render('quiz', { isEmpty: true, username: req.session.username })
             else
-                res.render('quiz', { quizzes: rows })
+                res.render('quiz', { quizzes: rows, username: req.session.username })
         }
     })
 
@@ -45,12 +45,12 @@ router.get('/stats', (req, res) => {
     `, [req.session.user_id], (err, rows) => {
         if (err) {
             console.log(err)
-            res.render('error', { message: `we could not get your scores` })
+            res.render('error', { message: `we could not get your scores`, username: req.session.username })
         } else {
             if (rows.length == 0)
-                res.render('scoreSelection', { isEmpty: true })
+                res.render('scoreSelection', { isEmpty: true, username: req.session.username })
             else
-                res.render('scoreSelection', { quizzes: rows })
+                res.render('scoreSelection', { quizzes: rows, username: req.session.username })
         }
     })
 })
@@ -71,7 +71,7 @@ router.get('/:quizId', (req, res) => {
                 if (err) {
                     console.log('ERROR at get quiz', quizId)
                     console.log(err)
-                    res.render('error')
+                    res.render('error', { username: req.session.username })
                 } else {
                     res.send(rows)
                 }
@@ -79,7 +79,7 @@ router.get('/:quizId', (req, res) => {
         }
     }).catch((reason) => {
         console.log(reason)
-        res.send({ error: 'an error with database' })
+        res.send({ error: 'an error with database', username: req.session.username })
     })
 
 
@@ -115,7 +115,7 @@ router.post('/:quizId/solve', (req, res) => {
 
     userSolvedQuiz(req.session.user_id, quiz_id, req.db).then((did) => {
         if (did) {
-            res.send({ error: 'thou shall not solve the same quiz more than once' })
+            res.send({ error: 'thou shall not solve the same quiz more than once', username: req.session.username })
         } else {
             getCorrectAnswers(quiz_id, req.db)
                 .then(async (corr) => {
@@ -153,7 +153,7 @@ router.post('/:quizId/solve', (req, res) => {
 
     }).catch((reason) => {
         console.log(reason)
-        res.send({ error: 'terrible error occured, please contact our support team' })
+        res.send({ error: 'terrible error occured, please contact our support team', username: req.session.username })
     })
 
 })
@@ -164,7 +164,7 @@ router.get('/:quizId/score', (req, res) => {
         .then((solved) => {
             if (!solved) {
                 console.log('user didnt solve quiz')
-                res.render('error', { message: 'you didnt solve that quiz' })
+                res.render('error', { message: 'you didnt solve that quiz', username: req.session.username })
             } else {
                 Promise.all(
                     [
@@ -179,19 +179,20 @@ router.get('/:quizId/score', (req, res) => {
                             userAnswers: userAnswers,
                             communityScore: communityScore,
                             correctAnswers: correctAnswers,
-                            questionsContent: questionsContent
+                            questionsContent: questionsContent,
+                            username: req.session.username
                         })
                     }).catch((reason) => {
                         console.log('error in promise.all')
                         console.log(reason)
-                        res.render('error', { message: reason })
+                        res.render('error', { message: reason, username: req.session.username })
                     })
             }
         })
         .catch((reason) => {
             console.log('error in userSolvedQuiz')
             console.log(reason)
-            res.render('error', { message: 'something went wrong' })
+            res.render('error', { message: 'something went wrong', username: req.session.username })
         })
 
 })

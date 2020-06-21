@@ -12,10 +12,11 @@ html
       input(type="hidden", name="_csrf", value=csrfToken)
       inpit(type='submit', value='Logout')
     .topnav
-      a(href='/') Home
-      a(href='/quiz/stats') Stats
-      a(href='/users/changepass') Change password
-      a#logout Logout
+      a Witaj, #{username}
+      a(href='/').hv Home
+      a(href='/quiz/stats').hv Stats
+      a(href='/users/changepass').hv Change password
+      a#logout.hv Logout
 
     script.
       var button = document.getElementById('logout');
