@@ -20,7 +20,6 @@ let router = express.Router();
 const util_1 = require("util");
 const run = (db) => util_1.promisify(db.run.bind(db));
 router.use('*', (req, res, next) => {
-    console.log('xddd');
     if (!req.session.loggedin) {
         res.render('error', { message: 'You have to be logged in, in order to solve quizzes' });
     }
@@ -89,9 +88,9 @@ function userSolvedQuiz(user_id, quiz_id, db) {
     });
 }
 router.post('/:quizId/solve', (req, res) => {
+    const quiz_id = parseInt(req.params.quizId);
     console.log(req.body);
     console.log(JSON.stringify(req.body));
-    const quiz_id = parseInt(req.params.quizId);
     userSolvedQuiz(req.session.user_id, quiz_id, req.db).then((did) => {
         if (did) {
             res.send({ error: 'thou shall not solve the same quiz more than once' });
