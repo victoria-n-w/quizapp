@@ -1,5 +1,3 @@
 node_modules
 base.db
 sessions
-routes/*.js
-public/javascripts/*.js
