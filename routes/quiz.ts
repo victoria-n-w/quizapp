@@ -16,20 +16,31 @@ router.use('*', (req, res, next) => {
 
 router.get('/:quizId', (req, res) => {
     const quizId = parseInt(req.params.quizId)
-    req.db.all(`
-        SELECT content, answer, penalty
+    userSolvedQuiz(req.session.user_id, quizId, req.db).then((did) => {
+        if (did) {
+            res.send({ error: 'thou shall not solve the same quiz twice' })
+        } else {
+            req.db.all(`
+        SELECT content, penalty
         FROM questions
         WHERE quiz_id = ?
         ORDER BY id
     `, [quizId], (err, rows) => {
-        if (err) {
-            console.log('ERROR at get quiz', quizId)
-            console.log(err)
-            res.render('error')
-        } else {
-            res.send(rows)
+                if (err) {
+                    console.log('ERROR at get quiz', quizId)
+                    console.log(err)
+                    res.render('error')
+                } else {
+                    res.send(rows)
+                }
+            })
         }
+    }).catch((reason) => {
+        console.log(reason)
+        res.send({ error: 'an error with database' })
     })
+
+
 })
 
 
@@ -55,7 +66,7 @@ router.get('/', (req, res) => {
 
 function userSolvedQuiz(user_id: number, quiz_id: number, db: sqlite3.Database): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        db.get('SELECT * FROM scores WHERE user_id=?, quiz_id=?', [user_id, quiz_id], (err, row) => {
+        db.get('SELECT * FROM scores WHERE user_id=? AND quiz_id=?', [user_id, quiz_id], (err, row) => {
             if (err)
                 reject(err)
             if (row == undefined) {
@@ -76,41 +87,48 @@ type postedAnswer = {
 router.post('/:quizId/solve', (req, res) => {
     const quiz_id = parseInt(req.params.quizId)
 
-    if (userSolvedQuiz(req.session.user_id, quiz_id, req.db)) {
-        res.send({ error: 'thou cannot solve the same quiz twice' })
-    } else {
-        getCorrectAnswers(quiz_id, req.db)
-            .then(async (corr) => {
-                if (req.body.answers.length != corr.length) {
-                    res.send({ error: 'how did this even happen' })
-                } else {
-                    await run(req.db)('BEGIN TRANSACTION')
-                    const answers = req.body.answers as postedAnswer[]
-                    let score = 0
-                    answers.forEach(async (a, i) => {
-                        let correct = 0
-                        if (a.answer == corr[i].answer)
-                            correct = 1
-                        else
-                            score += corr[i].penalty
+    userSolvedQuiz(req.session.user_id, quiz_id, req.db).then((did) => {
+        if (did) {
+            res.send({ error: 'thou shall not solve the same quiz more than once' })
+        } else {
+            getCorrectAnswers(quiz_id, req.db)
+                .then(async (corr) => {
 
-                        score += a.time
+                    const receivedAnswers = [] as postedAnswer[]
+                    if (receivedAnswers.length != corr.length) {
+                        res.send({ error: 'how did this even happen' })
+                    } else {
+                        await run(req.db)('BEGIN TRANSACTION');
+                        let score = 0
+                        receivedAnswers.forEach(async (a, i) => {
+                            let correct = 0
+                            if (a.answer == corr[i].answer) {
+                                correct = 1
+                            }
+                            else { score += corr[i].penalty }
 
-                        await run(req.db)(`
+                            score += a.time / 1000
+
+                            await run(req.db)(`
                             INSERT INTO answers
                             (answer, time, time_percent, correct, user_id, question_id, quiz_id)
                             VALUES
                             (?, ?, ?, ?, ?, ?, ?)
-                        `, [a.answer, a.time, a.timePercent, correct, req.session.user_id, corr[i].question_id, quiz_id])
-                    })
-                    await run(req.db)(`INSERT INTO scores (score, user_id, quiz_id) VALUES (?, ?, ?)`, [
-                        score, req.session.user_id, quiz_id
-                    ])
-                    await run(req.db)('END TRANSACTION')
-                    res.send({ ok: 'ok' })
-                }
-            })
-    }
+                        `, [a.answer, a.time, a.timePercent, correct, req.session.user_id, corr[i].question_id, quiz_id]);
+                        })
+                        await run(req.db)(`INSERT INTO scores (score, user_id, quiz_id) VALUES (?, ?, ?)`, [
+                            score, req.session.user_id, quiz_id
+                        ]);
+                        await run(req.db)('END TRANSACTION');
+                        res.send({ ok: 'ok' })
+                    }
+                })
+        }
+
+    }).catch((reason) => {
+        console.log(reason)
+        res.send({ error: 'terrible error occured, please contact our support team' })
+    })
 
 })
 
@@ -151,7 +169,7 @@ function getUserScore(user_id: number, quiz_id: number, db: sqlite3.Database): P
         db.get(`
             SELECT score
             FROM scores
-            WHERE user_id=?, quiz_id=?
+            WHERE user_id=? AND quiz_id=?
         `, [user_id, quiz_id], (err, row) => {
             if (err) {
                 console.log(err)
@@ -168,7 +186,7 @@ function getUserAnswers(user_id: number, quiz_id: number, db: sqlite3.Database):
         db.all(`
             SELECT answer, time, correct
             FROM answers
-            WHERE user_id = ?, quiz_id = ?
+            WHERE user_id = ? AND quiz_id = ?
             ORDER BY question_id
         `, [user_id, quiz_id], (err, rows) => {
             if (err) {

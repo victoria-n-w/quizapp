@@ -26,6 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use(session({ store: new SQLiteStore, secret: 'elo wale wiadro', resave: true, cookie: { maxAge: 1000 * 60 * 60 }, saveUninitialized: false })) /*1 hour*/
 
 app.use((req, res, next) => {

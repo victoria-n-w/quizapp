@@ -5,9 +5,13 @@ import { Timer } from "./timer.js";
 export type Question = {
     penalty: number;
     content: string;
-    answer: string;
 };
 
+type resultQuestion = {
+    answer: number
+    time: number
+    timePercent: number
+}
 
 export class QuizManager {
     private renderer: Renderer
@@ -83,15 +87,47 @@ export class QuizManager {
 
     }
 
-    public finish(): void {
+
+
+    public finish(quizId: number): void {
         if (!this.renderer.checkForEmpty())
             return
 
         clearInterval(this.interval)
 
-        //TODO wyslij wynik i cotam
+        let timeSum = 0;
+        this.questionsTimes.forEach((t) => {
+            timeSum += t
+        })
 
-        alert('skończono quiz xd')
+        let result: resultQuestion[] = []
+
+        this.questions.forEach((t, i) => {
+            let x = {} as resultQuestion
+            x.answer = parseInt(this.renderer.getAnswer(i))
+            x.time = this.questionsTimes[i]
+            x.timePercent = x.time / timeSum
+            result.push(x)
+        })
+
+        this.renderer.startLoading()
+
+        let xhr = new XMLHttpRequest()
+
+        xhr.open('POST', '/quiz/' + quizId.toString() + '/solve', true)
+        xhr.send(JSON.stringify({ 'result': result }))
+
+        console.log(JSON.stringify({ 'result': result }))
+
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                let res = JSON.parse(xhr.responseText)
+                console.log(res)
+                if (res.ok) {
+                    window.location.href = '/quiz/' + quizId.toString() + '/score'
+                }
+            }
+        }
     }
 
 
