@@ -14,7 +14,6 @@ function init(id: number, title: string) {
     fetch('/quiz/' + id.toString())
         .then(res => res.json())
         .then((data) => {
-            console.log(data)
             quiz = new QuizManager(data);
             document.getElementById('start-button').addEventListener("click", () => {
                 quiz.start();
@@ -26,10 +25,7 @@ function init(id: number, title: string) {
                 quiz.prvs();
             });
             document.getElementById('finish').addEventListener('click', () => {
-                quiz.finish();
-            });
-            document.getElementById('cancel').addEventListener('click', () => {
-                quiz.cancel();
+                quiz.finish(id);
             });
         }).catch((reason) => {
             console.log(reason)

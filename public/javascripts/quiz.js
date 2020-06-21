@@ -48,11 +48,36 @@ export class QuizManager {
         this.renderer.prvsQuestion(this.currentQuestion, this.maxQuestion);
         this.currentQuestion--;
     }
-    finish() {
+    finish(quizId) {
         if (!this.renderer.checkForEmpty())
             return;
         clearInterval(this.interval);
-        alert('skończono quiz xd');
+        let timeSum = 0;
+        this.questionsTimes.forEach((t) => {
+            timeSum += t;
+        });
+        let result = [];
+        this.questions.forEach((t, i) => {
+            let x = {};
+            x.answer = parseInt(this.renderer.getAnswer(i));
+            x.time = this.questionsTimes[i];
+            x.timePercent = x.time / timeSum;
+            result.push(x);
+        });
+        this.renderer.startLoading();
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/quiz/' + quizId.toString() + '/solve', true);
+        xhr.send(JSON.stringify({ 'result': result }));
+        console.log(JSON.stringify({ 'result': result }));
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                let res = JSON.parse(xhr.responseText);
+                console.log(res);
+                if (res.ok) {
+                    window.location.href = '/quiz/' + quizId.toString() + '/score';
+                }
+            }
+        };
     }
     cancel() {
         this.renderer.cancel();

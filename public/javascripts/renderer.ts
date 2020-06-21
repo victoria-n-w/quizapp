@@ -1,8 +1,6 @@
 type Question = {
     penalty: number;
     content: string;
-    answer: string;
-
 };
 
 import { Timer } from "./timer"
