@@ -8,9 +8,19 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     block scripts
   body
+    form(action='/users/logout', method='post', name='formLogout')
+      input(type="hidden", name="_csrf", value=csrfToken)
+      inpit(type='submit', value='Logout')
     .topnav
       a(href='/') Home
       a(href='/quiz/stats') Stats
-      a() Change password
-      a(href='/users/logout') Logout
+      a(href='/users/changepass') Change password
+      a#logout Logout
+
+    script.
+      var button = document.getElementById('logout');
+      button.addEventListener('click', ()=>{
+        document.querySelector('form[name="formLogout"]').submit();
+      });
+        
     block content

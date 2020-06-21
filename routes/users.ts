@@ -1,6 +1,9 @@
 import * as express from 'express'
 import * as sqlite3 from 'sqlite3'
 
+import csrf from 'csurf'
+const csrfProtection = csrf({ cookie: true })
+
 const sqlite = sqlite3.verbose()
 
 let router = express.Router()
@@ -32,7 +35,7 @@ function prGetUser(username: string, password: string): Promise<userLog> {
     })
 }
 
-router.post('/auth', (req, res) => {
+router.post('/auth', csrfProtection, (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     if (username && password) {
@@ -57,29 +60,52 @@ router.post('/auth', (req, res) => {
 });
 
 
-router.get('/login', (req, res) => {
-    console.log('xddd')
+router.get('/login', csrfProtection, (req, res) => {
     if (req.session.loggedin) {
         res.redirect('/')
     } else {
-        res.render('login', { title: 'login' })
+        res.render('login', { title: 'login', csrfToken: req.csrfToken() })
     }
 })
 
-router.get('/changepass', (req, res) => {
+router.get('/changepass', csrfProtection, (req, res) => {
     res.render('changepass')
 })
 
 
-router.post('/changepass', (req, res) => {
-    if (req.body.newPassword && req.body.confirmPassword) {
+router.post('/changepass', csrfProtection, (req, res) => {
+    if (req.body.newPassword && req.body.confirmPassword && req.body.password) {
+        req.db.get(`
+            SELECT * FROM users WHERE id=? AND password = ?
+        `, [req.session.user_id], (err, row) => {
+            if (err) {
+                console.log(err)
+                res.render('error', { message: 'thou cannot do that right now' })
+            } else if (row == undefined || req.body.newPassword !== req.body.confirmPassword) {
+                res.render('changepass', { invalid: true, csrfToken: req.csrfToken() })
+            } else {
+                req.db.run(`
+                    UPDATE users
+                    SET password=?, session_control=session_control+1
+                    WHERE id = ?
+                `, [req.body.newPassword, req.session.user_id], (err) => {
+                    if (err) {
+                        console.log(err)
+                    }
+                })
+                delete (req.session.user_id)
+                delete (req.session.loggedin)
+
+                res.redirect('/users/login')
+            }
+        })
 
     } else {
-        res.render('changepass', { invalid: true })
+        res.render('changepass', { invalid: true, csrfToken: req.csrfToken() })
     }
 })
 
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
     delete (req.session.loggedin)
     delete (req.session.user_id)
     res.redirect('/users/login')
