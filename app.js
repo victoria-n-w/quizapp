@@ -4,7 +4,6 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const sqlite3 = require('sqlite3')
-
 var session = require('express-session')
 const SQLiteStore = require('connect-sqlite3')(session)
 
@@ -34,6 +33,7 @@ app.use((req, res, next) => {
   next()
 })
 
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/quiz', quizRouter)
@@ -48,6 +48,8 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  console.log(err.message)
 
   // render the error page
   res.status(err.status || 500);

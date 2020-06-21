@@ -1,0 +1,37 @@
+extends layout
+block content
+
+    h2 Wynikk: #{Number(userScore).toFixed(3)}
+    
+    table#result-table
+        tr
+            th Pytanie
+            th Czas
+            th Twoja 
+                br 
+                | Odpowiedź
+            th Prawidłowa 
+                br 
+                | Odpowiedź
+            th Kara
+            th Średni czas
+                br 
+                | społeczności
+            
+        each el, i in userAnswers
+            if el.correct
+                tr
+                    td=questionsContent[i].content
+                    td=el.time
+                    td=el.answer
+                    td=correctAnswers[i].answer
+                    td --
+                    td=Number(communityScore[i].avgTime).toFixed(3)
+            else
+                tr.wrong-answer
+                    td=questionsContent[i].content
+                    td=el.time
+                    td=el.answer
+                    td=correctAnswers[i].answer
+                    td=correctAnswers[i].penalty
+                    td=communityScore[i].avgTime

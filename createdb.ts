@@ -12,7 +12,8 @@ function createTables(): Promise<void> {
             CREATE TABLE users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username VARCHAR NOT NULL,
-                password VARCHAR NOT NULL
+                password VARCHAR NOT NULL,
+                session_control INTEGER NOT NULL
             )        
         `)
 
@@ -37,7 +38,7 @@ function createTables(): Promise<void> {
         db.run(`
             CREATE TABLE answers (
                 answer INTEGER NOT NULL,
-                time INTEGER NOT NULL,
+                time FLOAT(3) NOT NULL,
                 time_percent FLOAT(9) NOT NULL,
                 correct BIT,
                 user_id INTEGER,
@@ -52,7 +53,7 @@ function createTables(): Promise<void> {
 
         db.run(`
             CREATE TABLE scores (
-                score INTEGER NOT NULL,
+                score FLOAT(3) NOT NULL,
                 user_id INTEGER,
                 quiz_id INTEGER,
                 FOREIGN KEY(user_id) REFERENCES users(id),
@@ -73,13 +74,13 @@ function createTables(): Promise<void> {
 function createUsers(): void {
     let db = new sqlite.Database('base.db')
     db.run(`
-        INSERT INTO users (username, password)
-        VALUES ('user1', 'user1')
+        INSERT INTO users (username, password, session_control)
+        VALUES ('user1', 'user1', 0)
     `)
 
     db.run(`
-        INSERT INTO users (username, password)
-        VALUES ('user2', 'user2')
+        INSERT INTO users (username, password, session_control)
+        VALUES ('user2', 'user2', 0)
     `)
 }
 

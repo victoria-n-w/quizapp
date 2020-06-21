@@ -11,7 +11,7 @@ const sqlite3 = __importStar(require("sqlite3"));
 const sqlite = sqlite3.verbose();
 let router = express.Router();
 const sqlGetUser = `
-        SELECT id FROM users  
+        SELECT id, session_control FROM users  
         WHERE username = ? AND password = ?
     `;
 function prGetUser(username, password) {
@@ -21,8 +21,9 @@ function prGetUser(username, password) {
             if (err)
                 rejects(err);
             if (row)
-                resolve(row.id);
-            resolve(-1);
+                resolve(row);
+            else
+                resolve(undefined);
         });
         db.close();
     });
@@ -31,15 +32,16 @@ router.post('/auth', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     if (username && password) {
-        prGetUser(username, password).then((id) => {
-            if (id >= 0) {
-                req.session.loggedin = true;
-                req.session.username = username;
-                req.session.user_id = id;
-                res.redirect('/');
+        prGetUser(username, password).then((row) => {
+            if (row == undefined) {
+                res.render('login', { invalid: true });
             }
             else {
-                res.render('login', { invalid: true });
+                req.session.loggedin = true;
+                req.session.username = username;
+                req.session.user_id = row.id;
+                req.session.session_control = row.session_control;
+                res.redirect('/');
             }
         }).catch((reason) => {
             console.log('error at login');
@@ -52,11 +54,27 @@ router.post('/auth', (req, res) => {
     }
 });
 router.get('/login', (req, res) => {
+    console.log('xddd');
     if (req.session.loggedin) {
-        res.redirect('/profile');
+        res.redirect('/');
     }
     else {
         res.render('login', { title: 'login' });
     }
+});
+router.get('/changepass', (req, res) => {
+    res.render('changepass');
+});
+router.post('/changepass', (req, res) => {
+    if (req.body.newPassword && req.body.confirmPassword) {
+    }
+    else {
+        res.render('changepass', { invalid: true });
+    }
+});
+router.get('/logout', (req, res) => {
+    delete (req.session.loggedin);
+    delete (req.session.user_id);
+    res.redirect('/users/login');
 });
 module.exports = router;

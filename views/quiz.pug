@@ -5,13 +5,18 @@ block content
   #main-container.grid-container
   
     .intro-container.card
-      p#introText
-        | Wybierz sobie jakiś quiz
-      ol#quizList
-        each quiz in quizzes
-          li
-            p.QuizTitle #{quiz.name}
-            button(data-arg1=quiz.id data-arg2=quiz.name).quizSelectButton.function-button Load Quiz
+
+      if isEmpty
+        p#introText
+          | Wszystkie quizy zostały przez ciebie rozwiązane!
+      else
+        p#introText
+          | Wybierz sobie jakiś quiz
+        ol#quizList
+          each quiz in quizzes
+            li
+              p.QuizTitle #{quiz.name}
+              button(data-arg1=quiz.id data-arg2=quiz.name).quizSelectButton.function-button Load Quiz
 
     #question-container.card.hidden
       #image-board-container

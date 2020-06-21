@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  .card(style="margin:auto; width:50%")
+    if isEmpty
+      p#introText
+      | Nie masz jeszcze żadnych rozwiązanych quizów
+    else
+      p#introText
+        | Zobacz sobie wyniki
+      ol#quizList
+        each quiz in quizzes
+          li
+            p.QuizTitle #{quiz.name}
+            a(href='/quiz/' + quiz.id + '/score')
+              button(data-arg1=quiz.id data-arg2=quiz.name).quizSelectButton.function-button Load Stats
+
+    

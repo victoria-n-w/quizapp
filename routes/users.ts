@@ -7,18 +7,25 @@ let router = express.Router()
 
 
 const sqlGetUser = `
-        SELECT id FROM users  
+        SELECT id, session_control FROM users  
         WHERE username = ? AND password = ?
     `
-function prGetUser(username: string, password: string): Promise<number> {
+
+type userLog = {
+    id: number
+    session_control: number
+}
+
+function prGetUser(username: string, password: string): Promise<userLog> {
     return new Promise((resolve, rejects) => {
         const db = new sqlite.Database('base.db')
         db.get(sqlGetUser, [username, password], (err, row) => {
             if (err)
                 rejects(err)
             if (row)
-                resolve(row.id)
-            resolve(-1)
+                resolve(row)
+            else
+                resolve(undefined)
         })
         db.close()
 
@@ -29,14 +36,15 @@ router.post('/auth', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     if (username && password) {
-        prGetUser(username, password).then((id) => {
-            if (id >= 0) {
+        prGetUser(username, password).then((row) => {
+            if (row == undefined) {
+                res.render('login', { invalid: true })
+            } else {
                 req.session.loggedin = true;
                 req.session.username = username;
-                req.session.user_id = id
+                req.session.user_id = row.id
+                req.session.session_control = row.session_control
                 res.redirect('/');
-            } else {
-                res.render('login', { invalid: true })
             }
         }).catch((reason) => {
             console.log('error at login')
@@ -50,11 +58,31 @@ router.post('/auth', (req, res) => {
 
 
 router.get('/login', (req, res) => {
+    console.log('xddd')
     if (req.session.loggedin) {
-        res.redirect('/profile')
+        res.redirect('/')
     } else {
         res.render('login', { title: 'login' })
     }
+})
+
+router.get('/changepass', (req, res) => {
+    res.render('changepass')
+})
+
+
+router.post('/changepass', (req, res) => {
+    if (req.body.newPassword && req.body.confirmPassword) {
+
+    } else {
+        res.render('changepass', { invalid: true })
+    }
+})
+
+router.get('/logout', (req, res) => {
+    delete (req.session.loggedin)
+    delete (req.session.user_id)
+    res.redirect('/users/login')
 })
 
 export = router
